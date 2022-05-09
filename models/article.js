@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       Article.belongsTo(models.User, {
         as: 'author',
         foreignKey: 'author_id'
-      })
+      });
+      Article.hasMany(models.Comment, {
+        as:'comments',
+        foreignKey:'article_id'
+      });
     }
   };
   Article.init({
@@ -23,7 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     body: DataTypes.STRING,
     image_url: DataTypes.STRING,
     author_id: DataTypes.INTEGER,
-    published_on: DataTypes.DATE
+    published_on: DataTypes.DATE,
+    friendlyPublishedDate: {
+      type: DataTypes.VIRTUAL,
+      get(){
+        return moment(this.published_on).format('MMM Do, YYYY')
+      }
+    }
   }, {
     sequelize,
     modelName: 'Article',
